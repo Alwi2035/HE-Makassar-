@@ -1,0 +1,34 @@
+# Konfigurasi untuk backend. Kita akan menggunakan Git (via GitHub/GitLab).
+backend:
+  name: git-gateway
+  branch: main # atau master, tergantung nama branch utama Anda
+
+# Alamat URL untuk mengunggah media (gambar, dll)
+media_folder: "assets/uploads" # Path di dalam proyek Anda
+public_folder: "/assets/uploads" # Path yang akan diakses dari website
+
+# Ini adalah "koleksi" atau jenis konten yang bisa Anda kelola.
+collections:
+  # Koleksi pertama adalah untuk Artikel
+  - name: "artikel" # Nama teknis (tanpa spasi)
+    label: "Artikel Blog" # Nama yang akan muncul di menu CMS
+    folder: "_posts/artikel" # Folder tempat menyimpan file artikel
+    create: true # Izinkan membuat artikel baru
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}" # Format nama file otomatis
+    fields: # Kolom-kolom isian yang akan muncul di editor
+      - {label: "Judul Artikel", name: "title", widget: "string"}
+      - {label: "Tanggal Publikasi", name: "date", widget: "datetime"}
+      - {label: "Gambar Utama", name: "thumbnail", widget: "image", required: false}
+      - {label: "Kategori", name: "category", widget: "string", default: "Parenting"}
+      - {label: "Isi Artikel", name: "body", widget: "markdown"}
+
+  # Koleksi kedua adalah untuk Aktivitas
+  - name: "aktivitas"
+    label: "Aktivitas"
+    folder: "_posts/aktivitas"
+    create: true
+    fields:
+      - {label: "Nama Aktivitas", name: "title", widget: "string"}
+      - {label: "Foto Aktivitas", name: "photo", widget: "image"}
+      - {label: "Deskripsi Singkat", name: "description", widget: "text"}
+
