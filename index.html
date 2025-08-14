@@ -16,33 +16,24 @@
     <!-- Feather Icons -->
     <script src="https://unpkg.com/feather-icons"></script>
 
-    <!-- KODE BARU: Skrip untuk Netlify Identity Widget -->
+    <!-- Netlify Identity Widget -->
     <script type="text/javascript" src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 
+    <!-- Marked.js untuk mengubah Markdown menjadi HTML -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
     <style>
-        /* Menggunakan font Inter sebagai default */
-        body {
-            font-family: 'Inter', sans-serif;
-        }
-        /* Kustomisasi warna berdasarkan logo */
+        body { font-family: 'Inter', sans-serif; }
         .bg-brand-blue { background-color: #1E3A8A; }
         .text-brand-blue { color: #1E3A8A; }
         .border-brand-blue { border-color: #1E3A8A; }
-
         .bg-brand-yellow { background-color: #FBBF24; }
         .text-brand-yellow { color: #FBBF24; }
-        
         .bg-brand-red { background-color: #DC2626; }
         .text-brand-red { color: #DC2626; }
-        
         .bg-brand-green { background-color: #16A34A; }
         .text-brand-green { color: #16A34A; }
-
-        .section-title {
-            font-size: 2.25rem; /* 36px */
-            font-weight: 700;
-            line-height: 2.5rem; /* 40px */
-        }
+        .section-title { font-size: 2.25rem; font-weight: 700; line-height: 2.5rem; }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-800">
@@ -56,7 +47,6 @@
                     <img src="https://storage.googleapis.com/gemini-prod-us-west1-453303912944/uploads/2024/07/22/a3390c5aa8179261.jpg" alt="Logo Home Education Makassar" class="h-12 w-auto">
                     <span class="hidden sm:block text-xl font-bold text-brand-blue">Home Education Makassar</span>
                 </a>
-
                 <!-- Navigasi Desktop -->
                 <nav class="hidden md:flex items-center space-x-8">
                     <a href="#beranda" class="text-gray-600 hover:text-brand-blue font-medium transition-colors">Beranda</a>
@@ -65,7 +55,6 @@
                     <a href="#artikel" class="text-gray-600 hover:text-brand-blue font-medium transition-colors">Artikel</a>
                     <a href="#kontak" class="bg-brand-blue hover:bg-opacity-90 text-white font-medium py-2 px-5 rounded-full transition-all">Kontak Kami</a>
                 </nav>
-
                 <!-- Tombol Menu Mobile -->
                 <div class="md:hidden">
                     <button id="mobile-menu-button" class="text-gray-600 focus:outline-none">
@@ -74,7 +63,6 @@
                 </div>
             </div>
         </div>
-
         <!-- Menu Mobile -->
         <div id="mobile-menu" class="hidden md:hidden bg-white shadow-lg">
             <a href="#beranda" class="block py-3 px-6 text-gray-600 hover:bg-gray-100">Beranda</a>
@@ -95,8 +83,7 @@
                             Pendidikan Sejati Berawal Dari Rumah.
                         </h1>
                         <p class="text-lg text-gray-600 mb-8 max-w-xl mx-auto md:mx-0">
-                            Selamat datang di Home Education Makassar Kami percaya pendidikan terbaik dimulai dari keluarga, dengan membentuk karakter dan kecerdasan anak sesuai dengan fitrah mereka, serta menjadikan Al-Qur'an dan Sunnah sebagai panduan hidup.
-
+                            Selamat datang di Home Education Makassar. Kami menyediakan lingkungan belajar yang mendukung, fleksibel, dan disesuaikan untuk membuka potensi terbaik setiap anak.
                         </p>
                         <div class="flex justify-center md:justify-start space-x-4">
                             <a href="#profil" class="bg-brand-blue hover:bg-opacity-90 text-white font-bold py-3 px-8 rounded-full transition-all shadow-lg">Pelajari Lebih Lanjut</a>
@@ -161,31 +148,8 @@
                     <h2 class="section-title text-brand-blue">Aktivitas Kami</h2>
                     <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">Dari ruang kelas hingga alam terbuka, lihatlah berbagai kegiatan menarik yang memperkaya pengalaman belajar siswa.</p>
                 </div>
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                    <!-- Kartu Aktivitas 1 -->
-                    <div class="bg-gray-50 rounded-xl shadow-lg overflow-hidden transform hover:-translate-y-2 transition-transform duration-300">
-                        <img src="https://placehold.co/400x300/FBBF24/FFFFFF?text=Project+Based" alt="Aktivitas 1" class="w-full h-56 object-cover">
-                        <div class="p-6">
-                            <h3 class="font-bold text-xl mb-2 text-gray-800">Project-Based Learning</h3>
-                            <p class="text-gray-600 text-base">Siswa belajar melalui pengerjaan proyek nyata yang relevan dengan minat mereka, mengasah kreativitas dan kemampuan memecahkan masalah.</p>
-                        </div>
-                    </div>
-                    <!-- Kartu Aktivitas 2 -->
-                    <div class="bg-gray-50 rounded-xl shadow-lg overflow-hidden transform hover:-translate-y-2 transition-transform duration-300">
-                        <img src="https://placehold.co/400x300/16A34A/FFFFFF?text=Field+Trip" alt="Aktivitas 2" class="w-full h-56 object-cover">
-                        <div class="p-6">
-                            <h3 class="font-bold text-xl mb-2 text-gray-800">Kunjungan Edukatif (Field Trip)</h3>
-                            <p class="text-gray-600 text-base">Belajar tidak hanya di dalam ruangan. Kami rutin mengadakan kunjungan ke museum, pusat sains, dan alam sekitar.</p>
-                        </div>
-                    </div>
-                    <!-- Kartu Aktivitas 3 -->
-                    <div class="bg-gray-50 rounded-xl shadow-lg overflow-hidden transform hover:-translate-y-2 transition-transform duration-300">
-                        <img src="https://placehold.co/400x300/DC2626/FFFFFF?text=Art+%26+Craft" alt="Aktivitas 3" class="w-full h-56 object-cover">
-                        <div class="p-6">
-                            <h3 class="font-bold text-xl mb-2 text-gray-800">Seni dan Kreativitas</h3>
-                            <p class="text-gray-600 text-base">Mendorong ekspresi diri melalui berbagai kegiatan seni, seperti melukis, musik, dan kerajinan tangan.</p>
-                        </div>
-                    </div>
+                <div id="aktivitas-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Konten aktivitas akan dimuat di sini -->
                 </div>
             </div>
         </section>
@@ -197,9 +161,8 @@
                     <h2 class="section-title text-brand-blue">Artikel & Wawasan</h2>
                     <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">Baca tulisan terbaru dari tim kami seputar dunia pendidikan, tips parenting, dan perkembangan anak.</p>
                 </div>
-                <!-- Konten artikel akan dimuat di sini oleh JavaScript -->
                 <div id="artikel-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    <!-- Kartu-kartu artikel akan muncul di sini -->
+                    <!-- Konten artikel akan dimuat di sini -->
                 </div>
             </div>
         </section>
@@ -305,12 +268,9 @@
         // Logika untuk menu mobile
         const mobileMenuButton = document.getElementById('mobile-menu-button');
         const mobileMenu = document.getElementById('mobile-menu');
-
         mobileMenuButton.addEventListener('click', () => {
             mobileMenu.classList.toggle('hidden');
         });
-
-        // Menutup menu mobile saat link di-klik
         const mobileLinks = document.querySelectorAll('#mobile-menu a');
         mobileLinks.forEach(link => {
             link.addEventListener('click', () => {
@@ -328,57 +288,113 @@
             }
         });
 
-        // --- SIMULASI DATA DARI CMS ---
-        // Nantinya, data ini akan diambil dari CMS, bukan ditulis di sini.
-        const articlesFromCMS = [
-            {
-                category: 'Parenting',
-                date: '7 Agustus 2025',
-                title: '5 Cara Efektif Mendampingi Anak Belajar di Rumah',
-                summary: 'Menemukan ritme belajar yang pas untuk anak di rumah bisa menjadi tantangan. Berikut adalah beberapa tips praktis...',
-                link: '#'
-            },
-            {
-                category: 'Pendidikan',
-                date: '1 Agustus 2025',
-                title: 'Pentingnya Kecerdasan Emosional untuk Anak',
-                summary: 'Selain kecerdasan akademis, kecerdasan emosional (EQ) memegang peranan krusial dalam kesuksesan anak...',
-                link: '#'
-            },
-            {
-                category: 'Teknologi',
-                date: '28 Juli 2025',
-                title: 'Memanfaatkan Teknologi Secara Bijak untuk Belajar',
-                summary: 'Gawai tidak selalu berdampak buruk. Jika digunakan dengan benar, teknologi bisa menjadi alat bantu belajar yang hebat...',
-                link: '#'
+        // ==================================================================
+        // LOGIKA BARU UNTUK MENGAMBIL DATA LANGSUNG DARI GITHUB
+        // ==================================================================
+        
+        const GITHUB_USER = 'Alwi2035';
+        const GITHUB_REPO = 'HE-Makassar';
+
+        // Fungsi untuk mengambil dan menampilkan konten dari folder tertentu
+        async function fetchAndDisplayContent(collectionName, containerId) {
+            const apiUrl = `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/_posts/${collectionName}`;
+            const container = document.getElementById(containerId);
+            container.innerHTML = '<p class="text-center col-span-full">Memuat data...</p>';
+
+            try {
+                const response = await fetch(apiUrl);
+                if (!response.ok) {
+                    throw new Error(`Gagal mengambil data dari GitHub: ${response.statusText}`);
+                }
+                const files = await response.json();
+
+                if (files.length === 0 || files.message) {
+                    container.innerHTML = `<p class="text-center col-span-full">Belum ada ${collectionName} yang dipublikasikan.</p>`;
+                    return;
+                }
+
+                container.innerHTML = ''; // Kosongkan kontainer sebelum diisi
+
+                for (const file of files) {
+                    if (file.type === 'file' && file.name !== '.gitkeep') {
+                        const fileResponse = await fetch(file.download_url);
+                        const content = await fileResponse.text();
+                        
+                        // Parse konten untuk mendapatkan frontmatter dan body
+                        const { attributes, body } = parseFrontMatter(content);
+
+                        let cardHtml = '';
+                        if (collectionName === 'artikel') {
+                            cardHtml = createArticleCard(attributes, body);
+                        } else if (collectionName === 'aktivitas') {
+                            cardHtml = createActivityCard(attributes, body);
+                        }
+                        
+                        container.innerHTML += cardHtml;
+                    }
+                }
+            } catch (error) {
+                console.error(`Error fetching ${collectionName}:`, error);
+                container.innerHTML = `<p class="text-center col-span-full text-red-500">Gagal memuat ${collectionName}.</p>`;
             }
-        ];
-
-        // --- FUNGSI UNTUK MENAMPILKAN ARTIKEL ---
-        function displayArticles() {
-            const container = document.getElementById('artikel-container');
-            // Kosongkan kontainer sebelum mengisi
-            container.innerHTML = ''; 
-
-            articlesFromCMS.forEach(article => {
-                // Membuat elemen HTML untuk setiap artikel
-                const articleCard = `
-                    <div class="bg-white rounded-xl shadow-lg overflow-hidden transform hover:-translate-y-2 transition-transform duration-300">
-                        <div class="p-6">
-                            <p class="text-sm text-gray-500 mb-2">${article.category} · ${article.date}</p>
-                            <h3 class="font-bold text-xl mb-3 text-gray-800">${article.title}</h3>
-                            <p class="text-gray-600 mb-4">${article.summary}</p>
-                            <a href="${article.link}" class="font-semibold text-brand-blue hover:text-brand-red transition-colors">Baca Selengkapnya &rarr;</a>
-                        </div>
-                    </div>
-                `;
-                // Menambahkan kartu artikel ke dalam kontainer
-                container.innerHTML += articleCard;
-            });
         }
 
-        // --- MEMANGGIL FUNGSI SAAT HALAMAN SELESAI DIMUAT ---
-        window.addEventListener('DOMContentLoaded', displayArticles);
+        // Fungsi untuk mem-parse frontmatter dari konten markdown
+        function parseFrontMatter(markdownContent) {
+            const match = /---\n([\s\S]+?)\n---/.exec(markdownContent);
+            const frontMatter = match ? match[1] : '';
+            const body = match ? markdownContent.slice(match[0].length).trim() : markdownContent;
+            
+            const attributes = {};
+            frontMatter.split('\n').forEach(line => {
+                const [key, ...valueParts] = line.split(':');
+                if (key && valueParts.length > 0) {
+                    attributes[key.trim()] = valueParts.join(':').trim().replace(/^['"]|['"]$/g, '');
+                }
+            });
+
+            return { attributes, body };
+        }
+
+        // Fungsi untuk membuat kartu HTML untuk artikel
+        function createArticleCard(attr, body) {
+            const date = new Date(attr.date).toLocaleDateString('id-ID', {
+                day: 'numeric', month: 'long', year: 'numeric'
+            });
+            // Potong ringkasan dari body markdown
+            const summary = marked.parse(body).replace(/<[^>]*>/g, '').substring(0, 120) + '...';
+
+            return `
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden transform hover:-translate-y-2 transition-transform duration-300 flex flex-col">
+                    ${attr.thumbnail ? `<img src="${attr.thumbnail}" alt="${attr.title}" class="w-full h-48 object-cover">` : ''}
+                    <div class="p-6 flex-grow flex flex-col">
+                        <p class="text-sm text-gray-500 mb-2">${attr.category || 'Umum'} · ${date}</p>
+                        <h3 class="font-bold text-xl mb-3 text-gray-800">${attr.title}</h3>
+                        <p class="text-gray-600 mb-4 flex-grow">${summary}</p>
+                        <a href="#" class="font-semibold text-brand-blue hover:text-brand-red transition-colors mt-auto">Baca Selengkapnya &rarr;</a>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // Fungsi untuk membuat kartu HTML untuk aktivitas
+        function createActivityCard(attr, body) {
+             return `
+                <div class="bg-gray-50 rounded-xl shadow-lg overflow-hidden transform hover:-translate-y-2 transition-transform duration-300">
+                    <img src="${attr.photo || 'https://placehold.co/400x300/1E3A8A/FFFFFF?text=Aktivitas'}" alt="${attr.title}" class="w-full h-56 object-cover">
+                    <div class="p-6">
+                        <h3 class="font-bold text-xl mb-2 text-gray-800">${attr.title}</h3>
+                        <p class="text-gray-600 text-base">${attr.description}</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Panggil fungsi saat halaman selesai dimuat
+        window.addEventListener('DOMContentLoaded', () => {
+            fetchAndDisplayContent('artikel', 'artikel-container');
+            fetchAndDisplayContent('aktivitas', 'aktivitas-container');
+        });
 
     </script>
 </body>
