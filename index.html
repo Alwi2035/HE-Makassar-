@@ -44,7 +44,7 @@
             <div class="flex items-center justify-between">
                 <!-- Logo -->
                 <a href="#beranda" class="flex items-center space-x-3">
-                    <img src="https://storage.googleapis.com/gemini-prod-us-west1-453303912944/uploads/2024/07/22/a3390c5aa8179261.jpg" alt="Logo Home Education Makassar" class="h-12 w-auto">
+                    <img src="/1754533927203.jpg" alt="Logo Home Education Makassar" class="h-12 w-auto">
                     <span class="hidden sm:block text-xl font-bold text-brand-blue">Home Education Makassar</span>
                 </a>
                 <!-- Navigasi Desktop -->
@@ -91,7 +91,7 @@
                         </div>
                     </div>
                     <div class="md:w-1/2">
-                        <img src="https://storage.googleapis.com/gemini-prod-us-west1-453303912944/uploads/2024/07/22/a3390c5aa8179261.jpg" alt="Logo Home Education Makassar" class="w-full max-w-md mx-auto rounded-lg">
+                        <img src="/1754533927203.jpg" alt="Logo Home Education Makassar" class="w-full max-w-md mx-auto rounded-lg">
                     </div>
                 </div>
             </div>
@@ -183,28 +183,29 @@
                                 <div class="bg-brand-blue text-white p-3 rounded-full"><i data-feather="map-pin"></i></div>
                                 <div>
                                     <h4 class="font-semibold">Alamat</h4>
-                                    <p class="text-gray-600">Jl. Pendidikan No. 123, Makassar, Sulawesi Selatan</p>
+                                    <p class="text-gray-600">Kota Makassar, Provinsi Sulawesi Selatan</p>
                                 </div>
                             </div>
                             <div class="flex items-center space-x-4">
                                 <div class="bg-brand-blue text-white p-3 rounded-full"><i data-feather="phone"></i></div>
                                 <div>
                                     <h4 class="font-semibold">Telepon</h4>
-                                    <p class="text-gray-600">(0411) 123-456</p>
+                                    <p class="text-gray-600">085385938503</p>
                                 </div>
                             </div>
                             <div class="flex items-center space-x-4">
                                 <div class="bg-brand-blue text-white p-3 rounded-full"><i data-feather="mail"></i></div>
                                 <div>
                                     <h4 class="font-semibold">Email</h4>
-                                    <p class="text-gray-600">info@he-makassar.com</p>
+                                    <p class="text-gray-600">homeeducationmakassar@homeeducationmakassar.online</p>
                                 </div>
                             </div>
                         </div>
                         <!-- Form Kontak -->
                         <div>
                              <h3 class="text-2xl font-bold text-gray-800 mb-4">Kirim Pesan</h3>
-                             <form action="#" method="POST" class="space-y-4">
+                             <!-- PERUBAHAN DI SINI: Menambahkan atribut netlify -->
+                             <form name="contact" method="POST" data-netlify="true" class="space-y-4">
                                  <div>
                                      <label for="name" class="sr-only">Nama</label>
                                      <input type="text" name="name" id="name" placeholder="Nama Anda" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-brand-blue">
@@ -293,7 +294,7 @@
         // ==================================================================
         
         const GITHUB_USER = 'Alwi2035';
-        const GITHUB_REPO = 'HE-Makassar';
+        const GITHUB_REPO = 'HE-Makassar-'; // Pastikan nama repo sesuai
 
         // Fungsi untuk mengambil dan menampilkan konten dari folder tertentu
         async function fetchAndDisplayContent(collectionName, containerId) {
