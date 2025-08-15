@@ -1,90 +1,107 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aktivitas Sekolah</title>
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <style>
-        .content-card {
-            transition: transform 0.3s ease;
-        }
-        .content-card:hover {
-            transform: translateY(-5px);
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Aktivitas</title>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <style>
+    body { 
+      font-family: Arial, sans-serif; 
+      background: #f9fafb; 
+      margin: 0; 
+      padding: 20px; 
+    }
+    .content-card { 
+      background: #fff; 
+      border-radius: 12px; 
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1); 
+      overflow: hidden; 
+      margin-bottom: 20px; 
+      transition: transform 0.3s; 
+    }
+    .content-card:hover { 
+      transform: translateY(-5px); 
+    }
+    .content-card img { 
+      width: 100%; 
+      height: 200px; 
+      object-fit: cover; 
+    }
+    .p-6 { 
+      padding: 16px; 
+    }
+    .text-brand-blue { 
+      color: #1E3A8A; 
+    }
+    button.read-more-btn { 
+      background: none; 
+      border: none; 
+      color: #1E3A8A; 
+      font-weight: bold; 
+      cursor: pointer; 
+      padding: 0; 
+      margin-top: 8px; 
+    }
+  </style>
 </head>
-<body class="bg-gray-100">
+<body>
 
-    <div class="container mx-auto px-4 py-8">
-        <h1 class="text-3xl font-bold text-center text-blue-800 mb-8">Aktivitas Sekolah</h1>
-        <div id="activity-container" class="grid md:grid-cols-3 gap-6"></div>
-    </div>
+<div id="activities-container"></div>
 
-    <script>
-        const activities = [
-            {
-                attr: { 
-                    title: "Kegiatan Pramuka",
-                    photo: "https://placehold.co/400x300/1E3A8A/FFFFFF?text=Pramuka"
-                },
-                body: "Kegiatan pramuka di sekolah ini bertujuan untuk melatih kedisiplinan, kemandirian, dan kepemimpinan siswa. Setiap pekan diadakan latihan rutin, dan setiap semester diadakan perkemahan bersama yang melibatkan berbagai lomba ketangkasan.",
-                slug: "pramuka"
-            },
-            {
-                attr: { 
-                    title: "Ekstrakurikuler Seni",
-                    photo: "https://placehold.co/400x300/9333EA/FFFFFF?text=Seni"
-                },
-                body: "Kegiatan seni meliputi tari tradisional, musik, dan teater. Siswa berkesempatan tampil di acara sekolah maupun kompetisi tingkat kota. Program ini membantu siswa mengembangkan kreativitas dan kepercayaan diri.",
-                slug: "seni"
-            },
-            {
-                attr: { 
-                    title: "Klub Sains",
-                    photo: "https://placehold.co/400x300/F59E0B/FFFFFF?text=Sains"
-                },
-                body: "Klub sains memfasilitasi siswa untuk melakukan eksperimen dan penelitian sederhana. Tujuannya adalah menumbuhkan rasa ingin tahu serta keterampilan berpikir kritis. Klub ini sering mengikuti lomba karya ilmiah.",
-                slug: "sains"
-            }
-        ];
+<script>
+  // Contoh data (bisa diganti ambil dari API/CMS)
+  const activities = [
+    {
+      attr: { 
+        title: "Sains di Dapur", 
+        photo: "https://placehold.co/400x300/1E3A8A/FFFFFF?text=Sains" 
+      },
+      body: "Eksperimen membuat letusan gunung berapi menggunakan bahan sederhana di dapur seperti soda kue dan cuka. Aktivitas ini mengajarkan reaksi kimia secara menyenangkan dan aman untuk anak-anak.",
+      slug: "sains-di-dapur"
+    },
+    {
+      attr: { 
+        title: "Menanam Bibit", 
+        photo: "https://placehold.co/400x300/1E3A8A/FFFFFF?text=Berkebun" 
+      },
+      body: "Kegiatan menanam bibit sayuran di pekarangan sekolah untuk mengenalkan proses pertumbuhan tanaman kepada murid. Murid akan memantau perkembangan tanaman setiap minggu.",
+      slug: "menanam-bibit"
+    }
+  ];
 
-        function createActivityCard(attr, body, slug) {
-            const fullTextHTML = marked.parse(body);
-            const fullTextPlain = fullTextHTML.replace(/<[^>]*>/g, '').trim();
-            const shortText = fullTextPlain.length > 150 ? fullTextPlain.substring(0, 150) + '...' : fullTextPlain;
+  function createActivityCard(attr, body, slug) {
+    // Konversi markdown ke HTML lalu ambil teks polos
+    const fullTextHTML = marked.parse(body);
+    const fullTextPlain = fullTextHTML.replace(/<[^>]*>/g, '').trim();
+    const shortText = fullTextPlain.length > 150 ? fullTextPlain.substring(0, 150) + '...' : fullTextPlain;
 
-            return `
-                <div id="${slug}" class="content-card bg-gray-50 rounded-xl shadow-lg overflow-hidden transform hover:-translate-y-2 transition-transform duration-300">
-                    <img src="${attr.photo || 'https://placehold.co/400x300/1E3A8A/FFFFFF?text=Aktivitas'}" alt="${attr.title}" class="w-full h-56 object-cover">
-                    <div class="p-6">
-                        <h3 class="font-bold text-xl mb-2 text-gray-800">${attr.title}</h3>
-                        <p class="text-gray-600 text-base" data-short="${shortText}" data-full='${fullTextHTML}'>${shortText}</p>
-                        ${fullTextPlain.length > 150 ? `<button class="text-blue-600 font-semibold mt-2" onclick="toggleReadMore(this)">Selengkapnya</button>` : ''}
-                    </div>
-                </div>
-            `;
-        }
+    return `
+      <div id="${slug}" class="content-card">
+        <img src="${attr.photo || 'https://placehold.co/400x300/1E3A8A/FFFFFF?text=Aktivitas'}" alt="${attr.title}">
+        <div class="p-6">
+          <h3 class="font-bold text-xl mb-2 text-gray-800">${attr.title}</h3>
+          <p class="text-gray-600 text-base" data-short="${shortText}" data-full='${fullTextHTML}'>${shortText}</p>
+          ${fullTextPlain.length > 150 ? `<button class="read-more-btn" onclick="toggleReadMore(this)">Selengkapnya</button>` : ''}
+        </div>
+      </div>
+    `;
+  }
 
-        function toggleReadMore(button) {
-            const p = button.previousElementSibling;
-            if (button.innerText === "Selengkapnya") {
-                p.innerHTML = p.getAttribute('data-full');
-                button.innerText = "Tutup";
-            } else {
-                p.innerText = p.getAttribute('data-short');
-                button.innerText = "Selengkapnya";
-            }
-        }
+  function toggleReadMore(button) {
+    const p = button.previousElementSibling;
+    if (button.innerText === "Selengkapnya") {
+      p.innerHTML = p.getAttribute('data-full');
+      button.innerText = "Tutup";
+    } else {
+      p.innerText = p.getAttribute('data-short');
+      button.innerText = "Selengkapnya";
+    }
+  }
 
-        function renderActivities() {
-            const container = document.getElementById("activity-container");
-            container.innerHTML = activities.map(act => createActivityCard(act.attr, act.body, act.slug)).join("");
-        }
-
-        renderActivities();
-    </script>
+  const container = document.getElementById("activities-container");
+  container.innerHTML = activities.map(act => createActivityCard(act.attr, act.body, act.slug)).join("");
+</script>
 
 </body>
 </html>
