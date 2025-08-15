@@ -1,107 +1,563 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" class="scroll-smooth">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Aktivitas</title>
-  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-  <style>
-    body { 
-      font-family: Arial, sans-serif; 
-      background: #f9fafb; 
-      margin: 0; 
-      padding: 20px; 
-    }
-    .content-card { 
-      background: #fff; 
-      border-radius: 12px; 
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1); 
-      overflow: hidden; 
-      margin-bottom: 20px; 
-      transition: transform 0.3s; 
-    }
-    .content-card:hover { 
-      transform: translateY(-5px); 
-    }
-    .content-card img { 
-      width: 100%; 
-      height: 200px; 
-      object-fit: cover; 
-    }
-    .p-6 { 
-      padding: 16px; 
-    }
-    .text-brand-blue { 
-      color: #1E3A8A; 
-    }
-    button.read-more-btn { 
-      background: none; 
-      border: none; 
-      color: #1E3A8A; 
-      font-weight: bold; 
-      cursor: pointer; 
-      padding: 0; 
-      margin-top: 8px; 
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Education Makassar</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Feather Icons -->
+    <script src="https://unpkg.com/feather-icons"></script>
+
+    <!-- Netlify Identity Widget -->
+    <script type="text/javascript" src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+
+    <!-- Marked.js untuk mengubah Markdown menjadi HTML -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        /* Skema Warna Baru */
+        .bg-brand-blue { background-color: #1E3A8A; }
+        .text-brand-blue { color: #1E3A8A; }
+        
+        .bg-brand-sage { background-color: #8A9A5B; }
+        .text-brand-sage { color: #8A9A5B; }
+
+        .bg-brand-orange { background-color: #F97316; }
+        .text-brand-orange { color: #F97316; }
+        .hover\:bg-brand-orange-dark:hover { background-color: #EA580C; }
+
+        .section-title { font-size: 2.25rem; font-weight: 700; line-height: 2.5rem; }
+        
+        /* Style untuk banner */
+        .hero-banner {
+            background-image: url('/assets/uploads/gemini_generated_image_larecklarecklare.png');
+            background-size: cover;
+            background-position: center;
+        }
+        .hero-overlay {
+            background-color: rgba(30, 58, 138, 0.7); /* Warna biru brand dengan transparansi */
+        }
+        
+        /* Style untuk konten artikel di dalam modal */
+        .prose h1, .prose h2, .prose h3 { font-weight: bold; margin-top: 1.5em; margin-bottom: 0.5em; }
+        .prose p { margin-bottom: 1em; line-height: 1.6; }
+        .prose ul { list-style-type: disc; margin-left: 1.5em; margin-bottom: 1em; }
+        .prose a { color: #1E3A8A; text-decoration: underline; }
+
+        /* Style untuk link dropdown yang aktif */
+        .dropdown-active {
+            color: #F97316; /* Oranye */
+            font-weight: 600;
+        }
+    </style>
 </head>
-<body>
+<body class="bg-gray-50 text-gray-800">
 
-<div id="activities-container"></div>
+    <!-- Header / Navbar -->
+    <header id="header" class="bg-white/80 backdrop-blur-lg shadow-sm sticky top-0 z-50 transition-all duration-300">
+        <div class="container mx-auto px-6 py-3">
+            <div class="flex items-center justify-between">
+                <!-- Logo -->
+                <a href="#beranda" class="flex items-center space-x-3">
+                    <img src="/1754533927203.jpg" alt="Logo Home Education Makassar" class="h-12 w-auto">
+                    <span class="hidden sm:block text-xl font-bold text-brand-blue">Home Education Makassar</span>
+                </a>
+                <!-- Navigasi Desktop -->
+                <nav class="hidden md:flex items-center space-x-8">
+                    <a href="#beranda" class="text-gray-600 hover:text-brand-blue font-medium transition-colors">Beranda</a>
+                    <a href="#profil" class="text-gray-600 hover:text-brand-blue font-medium transition-colors">Profil</a>
+                    
+                    <!-- Dropdown Aktivitas -->
+                    <div class="relative">
+                        <button id="aktivitas-menu-button" class="flex items-center text-gray-600 hover:text-brand-blue font-medium transition-colors">
+                            Aktivitas <i data-feather="chevron-down" class="ml-1 h-4 w-4"></i>
+                        </button>
+                        <div id="aktivitas-dropdown" class="absolute mt-2 w-56 bg-white rounded-md shadow-lg z-10 hidden">
+                            <!-- Link Aktivitas akan diisi oleh JavaScript -->
+                        </div>
+                    </div>
 
-<script>
-  // Contoh data (bisa diganti ambil dari API/CMS)
-  const activities = [
-    {
-      attr: { 
-        title: "Sains di Dapur", 
-        photo: "https://placehold.co/400x300/1E3A8A/FFFFFF?text=Sains" 
-      },
-      body: "Eksperimen membuat letusan gunung berapi menggunakan bahan sederhana di dapur seperti soda kue dan cuka. Aktivitas ini mengajarkan reaksi kimia secara menyenangkan dan aman untuk anak-anak.",
-      slug: "sains-di-dapur"
-    },
-    {
-      attr: { 
-        title: "Menanam Bibit", 
-        photo: "https://placehold.co/400x300/1E3A8A/FFFFFF?text=Berkebun" 
-      },
-      body: "Kegiatan menanam bibit sayuran di pekarangan sekolah untuk mengenalkan proses pertumbuhan tanaman kepada murid. Murid akan memantau perkembangan tanaman setiap minggu.",
-      slug: "menanam-bibit"
-    }
-  ];
+                    <!-- Dropdown Artikel -->
+                    <div class="relative">
+                        <button id="artikel-menu-button" class="flex items-center text-gray-600 hover:text-brand-blue font-medium transition-colors">
+                            Artikel <i data-feather="chevron-down" class="ml-1 h-4 w-4"></i>
+                        </button>
+                        <div id="artikel-dropdown" class="absolute mt-2 w-56 bg-white rounded-md shadow-lg z-10 hidden">
+                            <!-- Link Artikel akan diisi oleh JavaScript -->
+                        </div>
+                    </div>
 
-  function createActivityCard(attr, body, slug) {
-    // Konversi markdown ke HTML lalu ambil teks polos
-    const fullTextHTML = marked.parse(body);
-    const fullTextPlain = fullTextHTML.replace(/<[^>]*>/g, '').trim();
-    const shortText = fullTextPlain.length > 150 ? fullTextPlain.substring(0, 150) + '...' : fullTextPlain;
-
-    return `
-      <div id="${slug}" class="content-card">
-        <img src="${attr.photo || 'https://placehold.co/400x300/1E3A8A/FFFFFF?text=Aktivitas'}" alt="${attr.title}">
-        <div class="p-6">
-          <h3 class="font-bold text-xl mb-2 text-gray-800">${attr.title}</h3>
-          <p class="text-gray-600 text-base" data-short="${shortText}" data-full='${fullTextHTML}'>${shortText}</p>
-          ${fullTextPlain.length > 150 ? `<button class="read-more-btn" onclick="toggleReadMore(this)">Selengkapnya</button>` : ''}
+                    <a href="#kontak" class="bg-brand-sage hover:bg-opacity-90 text-white font-medium py-2 px-5 rounded-full transition-all">Kontak Kami</a>
+                </nav>
+                <!-- Tombol Menu Mobile -->
+                <div class="md:hidden">
+                    <button id="mobile-menu-button" class="text-gray-600 focus:outline-none">
+                        <i data-feather="menu" class="h-6 w-6"></i>
+                    </button>
+                </div>
+            </div>
         </div>
-      </div>
-    `;
-  }
+        <!-- Menu Mobile -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white shadow-lg">
+            <a href="#beranda" class="block py-3 px-6 text-gray-600 hover:bg-gray-100">Beranda</a>
+            <a href="#profil" class="block py-3 px-6 text-gray-600 hover:bg-gray-100">Profil</a>
+            <a href="#aktivitas" class="block py-3 px-6 text-gray-600 hover:bg-gray-100">Aktivitas</a>
+            <a href="#artikel" class="block py-3 px-6 text-gray-600 hover:bg-gray-100">Artikel</a>
+            <a href="#kontak" class="block py-3 px-6 text-gray-600 hover:bg-gray-100">Kontak Kami</a>
+        </div>
+    </header>
 
-  function toggleReadMore(button) {
-    const p = button.previousElementSibling;
-    if (button.innerText === "Selengkapnya") {
-      p.innerHTML = p.getAttribute('data-full');
-      button.innerText = "Tutup";
-    } else {
-      p.innerText = p.getAttribute('data-short');
-      button.innerText = "Selengkapnya";
-    }
-  }
+    <main>
+        <!-- Bagian Beranda (Hero Section dengan Banner) -->
+        <section id="beranda" class="relative hero-banner">
+            <div class="absolute inset-0 hero-overlay"></div>
+            <div class="relative min-h-screen flex items-center justify-center text-center">
+                <div class="container mx-auto px-6">
+                    <div class="max-w-3xl mx-auto">
+                        <h1 class="text-4xl md:text-6xl font-bold text-white leading-tight mb-4">
+                            Pendidikan Fitrah sesuai Quran & Sunnah.
+                        </h1>
+                        <p class="text-lg text-gray-200 mb-8">
+                            Ruang kolaborasi & strategi untuk orang tua pembelajar.
+                        </p>
+                        <div class="flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-4">
+                            <a href="#profil" class="bg-white hover:bg-gray-200 text-brand-blue font-bold py-3 px-8 rounded-full transition-all shadow-lg w-full sm:w-auto">Pelajari Lebih Lanjut</a>
+                            <a href="#kontak" class="bg-brand-orange hover:bg-brand-orange-dark text-white font-bold py-3 px-8 rounded-full transition-all shadow-lg w-full sm:w-auto">Hubungi Kami</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-  const container = document.getElementById("activities-container");
-  container.innerHTML = activities.map(act => createActivityCard(act.attr, act.body, act.slug)).join("");
-</script>
+        <!-- Bagian Profil -->
+        <section id="profil" class="py-20 bg-gray-50">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="section-title text-brand-blue">Tentang Kami</h2>
+                    <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">Mengenal lebih dekat visi, misi, dan pendekatan unik yang kami tawarkan di Home Education Makassar.</p>
+                </div>
+                <div class="flex flex-col md:flex-row items-center gap-12">
+                    <div class="md:w-1/2">
+                        <img src="/assets/uploads/untitled-design_20250815_050656_0000.png" alt="Pendidikan Keluarga" class="rounded-xl shadow-lg w-full">
+                    </div>
+                    <div class="md:w-1/2">
+                        <h3 class="text-2xl font-bold text-brand-blue mb-4">Manajemen Pendidikan Keluarga Berbasis Rumah</h3>
+                        <p class="text-gray-600 mb-6">
+                            Kami percaya bahwa keluarga adalah fondasi utama pendidikan. Sebagai ruang kolaborasi, kami hadir untuk membekali para orang tua pembelajar dengan strategi dan manajemen pendidikan berbasis rumah yang efektif, selaras dengan fitrah, Al-Qur'an, dan As-Sunnah.
+                        </p>
+                        <div class="space-y-6">
+                            <div class="flex items-start">
+                                <div class="bg-brand-sage text-white p-3 rounded-full mr-4 mt-1 flex-shrink-0">
+                                    <i data-feather="target" class="h-6 w-6"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-xl text-gray-800">Visi</h4>
+                                    <p class="text-gray-600">Mengembalikan makna pendidikan yang sejati berawal dari keluarga berasaskan Alquran dan As Sunnah.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start">
+                                <div class="bg-brand-sage text-white p-3 rounded-full mr-4 mt-1 flex-shrink-0">
+                                    <i data-feather="check-circle" class="h-6 w-6"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-xl text-gray-800">Misi</h4>
+                                    <ul class="list-disc list-inside text-gray-600 space-y-2 mt-2">
+                                        <li>Melaksanakan pendidikan keluarga berbasis fitrah.</li>
+                                        <li>Membentuk dan mengembangkan platform komunitas homeeducation sebagai wadah kolaborasi antara keluarga dan masyarakat dalam mengembangkan pendidikan berbasis fitrah.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
 
+        <!-- Bagian Aktivitas -->
+        <section id="aktivitas" class="py-20 bg-white">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="section-title text-brand-blue">Aktivitas Kami</h2>
+                    <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">Dari ruang belajar hingga alam terbuka, lihatlah berbagai kegiatan menarik yang memperkaya pengalaman belajar anak-anak.</p>
+                </div>
+                <div id="aktivitas-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Konten aktivitas akan dimuat di sini -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Bagian Artikel -->
+        <section id="artikel" class="py-20 bg-gray-50">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="section-title text-brand-blue">Artikel & Wawasan</h2>
+                    <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">Baca tulisan terbaru dari tim kami seputar dunia pendidikan, tips parenting, dan perkembangan anak.</p>
+                </div>
+                <div id="artikel-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Konten artikel akan dimuat di sini -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Bagian Kontak -->
+        <section id="kontak" class="py-20 bg-white">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="section-title text-brand-blue">Hubungi Kami</h2>
+                    <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">Punya pertanyaan atau ingin bergabung dengan komunitas? Jangan ragu untuk menghubungi kami melalui informasi di bawah ini.</p>
+                </div>
+                <div class="bg-gray-50 rounded-xl shadow-lg p-8 md:p-12 max-w-4xl mx-auto">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <!-- Info Kontak -->
+                        <div class="space-y-6">
+                            <h3 class="text-2xl font-bold text-gray-800">Informasi Kontak</h3>
+                            <div class="flex items-center space-x-4">
+                                <div class="bg-brand-blue text-white p-3 rounded-full"><i data-feather="map-pin"></i></div>
+                                <div>
+                                    <h4 class="font-semibold">Alamat</h4>
+                                    <p class="text-gray-600">Kota Makassar, Provinsi Sulawesi Selatan</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-4">
+                                <div class="bg-brand-blue text-white p-3 rounded-full"><i data-feather="phone"></i></div>
+                                <div>
+                                    <h4 class="font-semibold">Telepon</h4>
+                                    <p class="text-gray-600">085385938503</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-4">
+                                <div class="bg-brand-blue text-white p-3 rounded-full"><i data-feather="mail"></i></div>
+                                <div>
+                                    <h4 class="font-semibold">Email</h4>
+                                    <p class="text-gray-600">homeeducationmakassar@homeeducationmakassar.online</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Form Kontak -->
+                        <div>
+                             <h3 class="text-2xl font-bold text-gray-800 mb-4">Kirim Pesan</h3>
+                             <form name="contact" method="POST" data-netlify="true" class="space-y-4">
+                                 <div>
+                                     <label for="name" class="sr-only">Nama</label>
+                                     <input type="text" name="name" id="name" placeholder="Nama Anda" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-brand-blue">
+                                 </div>
+                                 <div>
+                                     <label for="email" class="sr-only">Email</label>
+                                     <input type="email" name="email" id="email" placeholder="Alamat Email" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-brand-blue">
+                                 </div>
+                                 <div>
+                                     <label for="message" class="sr-only">Pesan</label>
+                                     <textarea name="message" id="message" rows="4" placeholder="Pesan Anda" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-brand-blue"></textarea>
+                                 </div>
+                                 <button type="submit" class="w-full bg-brand-orange hover:bg-brand-orange-dark text-white font-bold py-3 px-6 rounded-lg transition-colors">Kirim Pesan</button>
+                             </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-brand-blue text-white">
+        <div class="container mx-auto px-6 py-12">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <!-- Tentang -->
+                <div class="col-span-1 md:col-span-2">
+                    <h3 class="text-xl font-bold mb-4">Home Education Makassar</h3>
+                    <p class="text-gray-300 max-w-md">Membimbing setiap anak untuk menemukan dan memaksimalkan potensi mereka melalui pendidikan yang personal dan menyenangkan.</p>
+                </div>
+                <!-- Link Cepat -->
+                <div>
+                    <h3 class="text-xl font-bold mb-4">Tautan</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#profil" class="text-gray-300 hover:text-white">Profil</a></li>
+                        <li><a href="#aktivitas" class="text-gray-300 hover:text-white">Aktivitas</a></li>
+                        <li><a href="#artikel" class="text-gray-300 hover:text-white">Artikel</a></li>
+                        <li><a href="#kontak" class="text-gray-300 hover:text-white">Kontak</a></li>
+                    </ul>
+                </div>
+                <!-- Sosial Media -->
+                <div>
+                    <h3 class="text-xl font-bold mb-4">Ikuti Kami</h3>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-300 hover:text-white"><i data-feather="facebook"></i></a>
+                        <a href="#" class="text-gray-300 hover:text-white"><i data-feather="instagram"></i></a>
+                        <a href="#" class="text-gray-300 hover:text-white"><i data-feather="youtube"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-12 border-t border-gray-700 pt-6 text-center text-gray-400">
+                <p>&copy; 2025 Home Education Makassar. Semua Hak Cipta Dilindungi.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modal Artikel -->
+    <div id="article-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden items-center justify-center p-4">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-3xl max-h-full overflow-y-auto">
+            <div class="p-6 md:p-8 relative">
+                <button onclick="closeArticleModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+                    <i data-feather="x" class="h-6 w-6"></i>
+                </button>
+                <h2 id="modal-title" class="text-3xl font-bold text-brand-blue mb-2"></h2>
+                <p id="modal-meta" class="text-sm text-gray-500 mb-4"></p>
+                <img id="modal-thumbnail" src="" alt="" class="w-full h-64 object-cover rounded-lg mb-6 hidden">
+                <div id="modal-body" class="prose max-w-none"></div>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        // Inisialisasi Feather Icons
+        feather.replace();
+
+        // Logika untuk menu mobile
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+        const mobileLinks = document.querySelectorAll('#mobile-menu a');
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+            });
+        });
+
+        // Efek shadow pada header saat scroll
+        const header = document.getElementById('header');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                header.classList.add('shadow-md');
+            } else {
+                header.classList.remove('shadow-md');
+            }
+        });
+
+        // ==================================================================
+        // LOGIKA BARU UNTUK MENGAMBIL DATA LANGSUNG DARI GITHUB
+        // ==================================================================
+        
+        const GITHUB_USER = 'Alwi2035';
+        const GITHUB_REPO = 'HE-Makassar-'; // Pastikan nama repo sesuai
+
+        async function fetchAndDisplayContent(collectionName, containerId, dropdownId) {
+            const apiUrl = `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/_posts/${collectionName}`;
+            const container = document.getElementById(containerId);
+            const dropdownContainer = document.getElementById(dropdownId);
+            
+            container.innerHTML = '<p class="text-center col-span-full">Memuat data...</p>';
+            if (dropdownContainer) dropdownContainer.innerHTML = '';
+
+            try {
+                const response = await fetch(apiUrl);
+                if (!response.ok) throw new Error(`Gagal mengambil data: ${response.statusText}`);
+                const files = await response.json();
+
+                if (files.length === 0 || files.message) {
+                    container.innerHTML = `<p class="text-center col-span-full">Belum ada ${collectionName} yang dipublikasikan.</p>`;
+                    return;
+                }
+
+                container.innerHTML = ''; 
+
+                for (const file of files) {
+                    if (file.type === 'file' && file.name !== '.gitkeep') {
+                        const fileResponse = await fetch(file.download_url);
+                        const content = await fileResponse.text();
+                        const { attributes, body } = parseFrontMatter(content);
+                        const slug = slugify(attributes.title);
+
+                        let cardHtml = '';
+                        if (collectionName === 'artikel') {
+                            cardHtml = createArticleCard(attributes, body, slug);
+                        } else if (collectionName === 'aktivitas') {
+                            cardHtml = createActivityCard(attributes, body, slug);
+                        }
+                        
+                        container.innerHTML += cardHtml;
+                        
+                        // Populate dropdown
+                        if (dropdownContainer) {
+                            const dropdownLink = `<a href="#${slug}" class="dropdown-link block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">${attributes.title}</a>`;
+                            dropdownContainer.innerHTML += dropdownLink;
+                        }
+                    }
+                }
+                
+                // Setelah semua kartu dibuat, mulai amati mereka
+                observeCards();
+
+            } catch (error) {
+                console.error(`Error fetching ${collectionName}:`, error);
+                container.innerHTML = `<p class="text-center col-span-full text-red-500">Gagal memuat ${collectionName}.</p>`;
+            }
+        }
+        
+        function slugify(text) {
+            return text.toString().toLowerCase()
+                .replace(/\s+/g, '-')           // Replace spaces with -
+                .replace(/[^\w\-]+/g, '')       // Remove all non-word chars
+                .replace(/\-\-+/g, '-')         // Replace multiple - with single -
+                .replace(/^-+/, '')             // Trim - from start of text
+                .replace(/-+$/, '');            // Trim - from end of text
+        }
+
+        function parseFrontMatter(markdownContent) {
+            const match = /---\n([\s\S]+?)\n---/.exec(markdownContent);
+            const frontMatter = match ? match[1] : '';
+            const body = match ? markdownContent.slice(match[0].length).trim() : markdownContent;
+            
+            const attributes = {};
+            frontMatter.split('\n').forEach(line => {
+                const [key, ...valueParts] = line.split(':');
+                if (key && valueParts.length > 0) {
+                    attributes[key.trim()] = valueParts.join(':').trim().replace(/^['"]|['"]$/g, '');
+                }
+            });
+            return { attributes, body };
+        }
+
+        function createArticleCard(attr, body, slug) {
+            const date = new Date(attr.date).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+            const summary = marked.parse(body).replace(/<[^>]*>/g, '').substring(0, 120) + '...';
+            const attrString = JSON.stringify(attr).replace(/'/g, "\\'");
+            const bodyString = JSON.stringify(body).replace(/'/g, "\\'");
+
+            return `
+                <div id="${slug}" class="content-card bg-white rounded-xl shadow-lg overflow-hidden transform hover:-translate-y-2 transition-transform duration-300 flex flex-col">
+                    ${attr.thumbnail ? `<img src="${attr.thumbnail}" alt="${attr.title}" class="w-full h-48 object-cover">` : ''}
+                    <div class="p-6 flex-grow flex flex-col">
+                        <p class="text-sm text-gray-500 mb-2">${attr.category || 'Umum'} · ${date}</p>
+                        <h3 class="font-bold text-xl mb-3 text-gray-800">${attr.title}</h3>
+                        <p class="text-gray-600 mb-4 flex-grow">${summary}</p>
+                        <a href="javascript:void(0)" onclick='showArticleModal(${attrString}, ${bodyString})' class="font-semibold text-brand-blue hover:text-brand-orange transition-colors mt-auto">Baca Selengkapnya &rarr;</a>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function createActivityCard(attr, body, slug) {
+             return `
+                <div id="${slug}" class="content-card bg-gray-50 rounded-xl shadow-lg overflow-hidden transform hover:-translate-y-2 transition-transform duration-300">
+                    <img src="${attr.photo || 'https://placehold.co/400x300/1E3A8A/FFFFFF?text=Aktivitas'}" alt="${attr.title}" class="w-full h-56 object-cover">
+                    <div class="p-6">
+                        <h3 class="font-bold text-xl mb-2 text-gray-800">${attr.title}</h3>
+                        <div class="text-gray-600 text-base">${marked.parse(body)}</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // --- FUNGSI UNTUK MODAL ARTIKEL ---
+        const articleModal = document.getElementById('article-modal');
+        const modalTitle = document.getElementById('modal-title');
+        const modalMeta = document.getElementById('modal-meta');
+        const modalThumbnail = document.getElementById('modal-thumbnail');
+        const modalBody = document.getElementById('modal-body');
+
+        function showArticleModal(attributes, body) {
+            const date = new Date(attributes.date).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+            modalTitle.innerText = attributes.title;
+            modalMeta.innerText = `${attributes.category || 'Umum'} · ${date}`;
+            
+            if (attributes.thumbnail) {
+                modalThumbnail.src = attributes.thumbnail;
+                modalThumbnail.alt = attributes.title;
+                modalThumbnail.classList.remove('hidden');
+            } else {
+                modalThumbnail.classList.add('hidden');
+            }
+
+            modalBody.innerHTML = marked.parse(body);
+            articleModal.classList.remove('hidden');
+            articleModal.classList.add('flex');
+            feather.replace(); // Perbarui ikon di dalam modal
+        }
+
+        function closeArticleModal() {
+            articleModal.classList.add('hidden');
+            articleModal.classList.remove('flex');
+        }
+
+        articleModal.addEventListener('click', (event) => {
+            if (event.target === articleModal) {
+                closeArticleModal();
+            }
+        });
+        
+        // --- LOGIKA DROPDOWN MENU ---
+        function setupDropdown(buttonId, dropdownId) {
+            const button = document.getElementById(buttonId);
+            const dropdown = document.getElementById(dropdownId);
+            
+            button.addEventListener('click', (event) => {
+                event.stopPropagation();
+                // Tutup dropdown lain
+                if (dropdownId === 'aktivitas-dropdown') {
+                    document.getElementById('artikel-dropdown').classList.add('hidden');
+                } else {
+                    document.getElementById('aktivitas-dropdown').classList.add('hidden');
+                }
+                dropdown.classList.toggle('hidden');
+            });
+        }
+        
+        // Tutup dropdown jika klik di luar
+        window.addEventListener('click', () => {
+            document.getElementById('aktivitas-dropdown').classList.add('hidden');
+            document.getElementById('artikel-dropdown').classList.add('hidden');
+        });
+
+        // --- LOGIKA UNTUK MENANDAI LINK AKTIF SAAT SCROLL ---
+        function observeCards() {
+            const observerOptions = {
+                root: null,
+                rootMargin: '-50% 0px -50% 0px', // Aktif saat elemen di tengah layar
+                threshold: 0
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    const id = entry.target.getAttribute('id');
+                    const link = document.querySelector(`.dropdown-link[href="#${id}"]`);
+                    if (link) {
+                        if (entry.isIntersecting) {
+                            // Hapus kelas aktif dari semua link lain
+                            document.querySelectorAll('.dropdown-link').forEach(l => l.classList.remove('dropdown-active'));
+                            // Tambahkan kelas aktif ke link saat ini
+                            link.classList.add('dropdown-active');
+                        } else {
+                            link.classList.remove('dropdown-active');
+                        }
+                    }
+                });
+            }, observerOptions);
+
+            const cards = document.querySelectorAll('.content-card');
+            cards.forEach(card => observer.observe(card));
+        }
+
+
+        // Panggil fungsi saat halaman selesai dimuat
+        window.addEventListener('DOMContentLoaded', () => {
+            fetchAndDisplayContent('artikel', 'artikel-container', 'artikel-dropdown');
+            fetchAndDisplayContent('aktivitas', 'aktivitas-container', 'aktivitas-dropdown');
+            setupDropdown('aktivitas-menu-button', 'aktivitas-dropdown');
+            setupDropdown('artikel-menu-button', 'artikel-dropdown');
+        });
+
+    </script>
 </body>
 </html>
