@@ -46,6 +46,12 @@
         .hero-overlay {
             background-color: rgba(30, 58, 138, 0.7); /* Warna biru brand dengan transparansi */
         }
+        
+        /* Style untuk konten artikel di dalam modal */
+        .prose h1, .prose h2, .prose h3 { font-weight: bold; margin-top: 1.5em; margin-bottom: 0.5em; }
+        .prose p { margin-bottom: 1em; line-height: 1.6; }
+        .prose ul { list-style-type: disc; margin-left: 1.5em; margin-bottom: 1em; }
+        .prose a { color: #1E3A8A; text-decoration: underline; }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-800">
@@ -63,8 +69,27 @@
                 <nav class="hidden md:flex items-center space-x-8">
                     <a href="#beranda" class="text-gray-600 hover:text-brand-blue font-medium transition-colors">Beranda</a>
                     <a href="#profil" class="text-gray-600 hover:text-brand-blue font-medium transition-colors">Profil</a>
-                    <a href="#aktivitas" class="text-gray-600 hover:text-brand-blue font-medium transition-colors">Aktivitas</a>
-                    <a href="#artikel" class="text-gray-600 hover:text-brand-blue font-medium transition-colors">Artikel</a>
+                    
+                    <!-- Dropdown Aktivitas -->
+                    <div class="relative">
+                        <button id="aktivitas-menu-button" class="flex items-center text-gray-600 hover:text-brand-blue font-medium transition-colors">
+                            Aktivitas <i data-feather="chevron-down" class="ml-1 h-4 w-4"></i>
+                        </button>
+                        <div id="aktivitas-dropdown" class="absolute mt-2 w-56 bg-white rounded-md shadow-lg z-10 hidden">
+                            <!-- Link Aktivitas akan diisi oleh JavaScript -->
+                        </div>
+                    </div>
+
+                    <!-- Dropdown Artikel -->
+                    <div class="relative">
+                        <button id="artikel-menu-button" class="flex items-center text-gray-600 hover:text-brand-blue font-medium transition-colors">
+                            Artikel <i data-feather="chevron-down" class="ml-1 h-4 w-4"></i>
+                        </button>
+                        <div id="artikel-dropdown" class="absolute mt-2 w-56 bg-white rounded-md shadow-lg z-10 hidden">
+                            <!-- Link Artikel akan diisi oleh JavaScript -->
+                        </div>
+                    </div>
+
                     <a href="#kontak" class="bg-brand-sage hover:bg-opacity-90 text-white font-medium py-2 px-5 rounded-full transition-all">Kontak Kami</a>
                 </nav>
                 <!-- Tombol Menu Mobile -->
@@ -271,6 +296,22 @@
         </div>
     </footer>
 
+    <!-- Modal Artikel -->
+    <div id="article-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden items-center justify-center p-4">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-3xl max-h-full overflow-y-auto">
+            <div class="p-6 md:p-8 relative">
+                <button onclick="closeArticleModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+                    <i data-feather="x" class="h-6 w-6"></i>
+                </button>
+                <h2 id="modal-title" class="text-3xl font-bold text-brand-blue mb-2"></h2>
+                <p id="modal-meta" class="text-sm text-gray-500 mb-4"></p>
+                <img id="modal-thumbnail" src="" alt="" class="w-full h-64 object-cover rounded-lg mb-6 hidden">
+                <div id="modal-body" class="prose max-w-none"></div>
+            </div>
+        </div>
+    </div>
+
+
     <script>
         // Inisialisasi Feather Icons
         feather.replace();
@@ -305,17 +346,17 @@
         const GITHUB_USER = 'Alwi2035';
         const GITHUB_REPO = 'HE-Makassar-'; // Pastikan nama repo sesuai
 
-        // Fungsi untuk mengambil dan menampilkan konten dari folder tertentu
-        async function fetchAndDisplayContent(collectionName, containerId) {
+        async function fetchAndDisplayContent(collectionName, containerId, dropdownId) {
             const apiUrl = `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/_posts/${collectionName}`;
             const container = document.getElementById(containerId);
+            const dropdownContainer = document.getElementById(dropdownId);
+            
             container.innerHTML = '<p class="text-center col-span-full">Memuat data...</p>';
+            if (dropdownContainer) dropdownContainer.innerHTML = '';
 
             try {
                 const response = await fetch(apiUrl);
-                if (!response.ok) {
-                    throw new Error(`Gagal mengambil data dari GitHub: ${response.statusText}`);
-                }
+                if (!response.ok) throw new Error(`Gagal mengambil data: ${response.statusText}`);
                 const files = await response.json();
 
                 if (files.length === 0 || files.message) {
@@ -323,24 +364,29 @@
                     return;
                 }
 
-                container.innerHTML = ''; // Kosongkan kontainer sebelum diisi
+                container.innerHTML = ''; 
 
                 for (const file of files) {
                     if (file.type === 'file' && file.name !== '.gitkeep') {
                         const fileResponse = await fetch(file.download_url);
                         const content = await fileResponse.text();
-                        
-                        // Parse konten untuk mendapatkan frontmatter dan body
                         const { attributes, body } = parseFrontMatter(content);
+                        const slug = slugify(attributes.title);
 
                         let cardHtml = '';
                         if (collectionName === 'artikel') {
-                            cardHtml = createArticleCard(attributes, body);
+                            cardHtml = createArticleCard(attributes, body, slug);
                         } else if (collectionName === 'aktivitas') {
-                            cardHtml = createActivityCard(attributes, body);
+                            cardHtml = createActivityCard(attributes, body, slug);
                         }
                         
                         container.innerHTML += cardHtml;
+                        
+                        // Populate dropdown
+                        if (dropdownContainer) {
+                            const dropdownLink = `<a href="#${slug}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">${attributes.title}</a>`;
+                            dropdownContainer.innerHTML += dropdownLink;
+                        }
                     }
                 }
             } catch (error) {
@@ -348,8 +394,16 @@
                 container.innerHTML = `<p class="text-center col-span-full text-red-500">Gagal memuat ${collectionName}.</p>`;
             }
         }
+        
+        function slugify(text) {
+            return text.toString().toLowerCase()
+                .replace(/\s+/g, '-')           // Replace spaces with -
+                .replace(/[^\w\-]+/g, '')       // Remove all non-word chars
+                .replace(/\-\-+/g, '-')         // Replace multiple - with single -
+                .replace(/^-+/, '')             // Trim - from start of text
+                .replace(/-+$/, '');            // Trim - from end of text
+        }
 
-        // Fungsi untuk mem-parse frontmatter dari konten markdown
         function parseFrontMatter(markdownContent) {
             const match = /---\n([\s\S]+?)\n---/.exec(markdownContent);
             const frontMatter = match ? match[1] : '';
@@ -362,48 +416,107 @@
                     attributes[key.trim()] = valueParts.join(':').trim().replace(/^['"]|['"]$/g, '');
                 }
             });
-
             return { attributes, body };
         }
 
-        // Fungsi untuk membuat kartu HTML untuk artikel
-        function createArticleCard(attr, body) {
-            const date = new Date(attr.date).toLocaleDateString('id-ID', {
-                day: 'numeric', month: 'long', year: 'numeric'
-            });
-            // Potong ringkasan dari body markdown
+        function createArticleCard(attr, body, slug) {
+            const date = new Date(attr.date).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
             const summary = marked.parse(body).replace(/<[^>]*>/g, '').substring(0, 120) + '...';
+            const attrString = JSON.stringify(attr).replace(/'/g, "\\'");
+            const bodyString = JSON.stringify(body).replace(/'/g, "\\'");
 
             return `
-                <div class="bg-white rounded-xl shadow-lg overflow-hidden transform hover:-translate-y-2 transition-transform duration-300 flex flex-col">
+                <div id="${slug}" class="bg-white rounded-xl shadow-lg overflow-hidden transform hover:-translate-y-2 transition-transform duration-300 flex flex-col">
                     ${attr.thumbnail ? `<img src="${attr.thumbnail}" alt="${attr.title}" class="w-full h-48 object-cover">` : ''}
                     <div class="p-6 flex-grow flex flex-col">
                         <p class="text-sm text-gray-500 mb-2">${attr.category || 'Umum'} · ${date}</p>
                         <h3 class="font-bold text-xl mb-3 text-gray-800">${attr.title}</h3>
                         <p class="text-gray-600 mb-4 flex-grow">${summary}</p>
-                        <a href="#" class="font-semibold text-brand-blue hover:text-brand-orange transition-colors mt-auto">Baca Selengkapnya &rarr;</a>
+                        <a href="javascript:void(0)" onclick='showArticleModal(${attrString}, ${bodyString})' class="font-semibold text-brand-blue hover:text-brand-orange transition-colors mt-auto">Baca Selengkapnya &rarr;</a>
                     </div>
                 </div>
             `;
         }
         
-        // Fungsi untuk membuat kartu HTML untuk aktivitas
-        function createActivityCard(attr, body) {
+        function createActivityCard(attr, body, slug) {
              return `
-                <div class="bg-gray-50 rounded-xl shadow-lg overflow-hidden transform hover:-translate-y-2 transition-transform duration-300">
+                <div id="${slug}" class="bg-gray-50 rounded-xl shadow-lg overflow-hidden transform hover:-translate-y-2 transition-transform duration-300">
                     <img src="${attr.photo || 'https://placehold.co/400x300/1E3A8A/FFFFFF?text=Aktivitas'}" alt="${attr.title}" class="w-full h-56 object-cover">
                     <div class="p-6">
                         <h3 class="font-bold text-xl mb-2 text-gray-800">${attr.title}</h3>
-                        <p class="text-gray-600 text-base">${marked.parse(body)}</p>
+                        <div class="text-gray-600 text-base">${marked.parse(body)}</div>
                     </div>
                 </div>
             `;
         }
 
+        // --- FUNGSI UNTUK MODAL ARTIKEL ---
+        const articleModal = document.getElementById('article-modal');
+        const modalTitle = document.getElementById('modal-title');
+        const modalMeta = document.getElementById('modal-meta');
+        const modalThumbnail = document.getElementById('modal-thumbnail');
+        const modalBody = document.getElementById('modal-body');
+
+        function showArticleModal(attributes, body) {
+            const date = new Date(attributes.date).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+            modalTitle.innerText = attributes.title;
+            modalMeta.innerText = `${attributes.category || 'Umum'} · ${date}`;
+            
+            if (attributes.thumbnail) {
+                modalThumbnail.src = attributes.thumbnail;
+                modalThumbnail.alt = attributes.title;
+                modalThumbnail.classList.remove('hidden');
+            } else {
+                modalThumbnail.classList.add('hidden');
+            }
+
+            modalBody.innerHTML = marked.parse(body);
+            articleModal.classList.remove('hidden');
+            articleModal.classList.add('flex');
+            feather.replace(); // Perbarui ikon di dalam modal
+        }
+
+        function closeArticleModal() {
+            articleModal.classList.add('hidden');
+            articleModal.classList.remove('flex');
+        }
+
+        articleModal.addEventListener('click', (event) => {
+            if (event.target === articleModal) {
+                closeArticleModal();
+            }
+        });
+        
+        // --- LOGIKA DROPDOWN MENU ---
+        function setupDropdown(buttonId, dropdownId) {
+            const button = document.getElementById(buttonId);
+            const dropdown = document.getElementById(dropdownId);
+            
+            button.addEventListener('click', (event) => {
+                event.stopPropagation();
+                // Tutup dropdown lain
+                if (dropdownId === 'aktivitas-dropdown') {
+                    document.getElementById('artikel-dropdown').classList.add('hidden');
+                } else {
+                    document.getElementById('aktivitas-dropdown').classList.add('hidden');
+                }
+                dropdown.classList.toggle('hidden');
+            });
+        }
+        
+        // Tutup dropdown jika klik di luar
+        window.addEventListener('click', () => {
+            document.getElementById('aktivitas-dropdown').classList.add('hidden');
+            document.getElementById('artikel-dropdown').classList.add('hidden');
+        });
+
+
         // Panggil fungsi saat halaman selesai dimuat
         window.addEventListener('DOMContentLoaded', () => {
-            fetchAndDisplayContent('artikel', 'artikel-container');
-            fetchAndDisplayContent('aktivitas', 'aktivitas-container');
+            fetchAndDisplayContent('artikel', 'artikel-container', 'artikel-dropdown');
+            fetchAndDisplayContent('aktivitas', 'aktivitas-container', 'aktivitas-dropdown');
+            setupDropdown('aktivitas-menu-button', 'aktivitas-dropdown');
+            setupDropdown('artikel-menu-button', 'artikel-dropdown');
         });
 
     </script>
