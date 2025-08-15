@@ -394,7 +394,7 @@
                     <img src="${attr.photo || 'https://placehold.co/400x300/1E3A8A/FFFFFF?text=Aktivitas'}" alt="${attr.title}" class="w-full h-56 object-cover">
                     <div class="p-6">
                         <h3 class="font-bold text-xl mb-2 text-gray-800">${attr.title}</h3>
-                        <p class="text-gray-600 text-base">${attr.description}</p>
+                        <p class="text-gray-600 text-base">${marked.parse(body)}</p>
                     </div>
                 </div>
             `;
