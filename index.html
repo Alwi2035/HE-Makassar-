@@ -386,12 +386,12 @@
                             cardHtml = createActivityCard(attributes, body, slug);
                         }
                         
-                        container.innerHTML += cardHtml;
+                        container.insertAdjacentHTML('beforeend', cardHtml);
                         
                         // Populate dropdown
                         if (dropdownContainer) {
                             const dropdownLink = `<a href="#${slug}" class="dropdown-link block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">${attributes.title}</a>`;
-                            dropdownContainer.innerHTML += dropdownLink;
+                            dropdownContainer.insertAdjacentHTML('beforeend', dropdownLink);
                         }
                     }
                 }
@@ -534,11 +534,22 @@
             document.getElementById('artikel-dropdown').classList.add('hidden');
         });
 
-        // --- LOGIKA UNTUK MENANDAI LINK AKTIF SAAT SCROLL ---
+        // --- LOGIKA UNTUK MENANDAI LINK AKTIF SAAT SCROLL & KLIK ---
+        function handleDropdownClick(event) {
+            if (event.target.classList.contains('dropdown-link')) {
+                document.querySelectorAll('.dropdown-link').forEach(l => l.classList.remove('dropdown-active'));
+                event.target.classList.add('dropdown-active');
+                
+                // Tutup dropdown setelah diklik
+                document.getElementById('aktivitas-dropdown').classList.add('hidden');
+                document.getElementById('artikel-dropdown').classList.add('hidden');
+            }
+        }
+
         function observeCards() {
             const observerOptions = {
                 root: null,
-                rootMargin: '-50% 0px -50% 0px', // Aktif saat elemen di tengah layar
+                rootMargin: '-40% 0px -40% 0px', // Zona aktif di tengah layar
                 threshold: 0
             };
 
@@ -548,9 +559,7 @@
                     const link = document.querySelector(`.dropdown-link[href="#${id}"]`);
                     if (link) {
                         if (entry.isIntersecting) {
-                            // Hapus kelas aktif dari semua link lain
                             document.querySelectorAll('.dropdown-link').forEach(l => l.classList.remove('dropdown-active'));
-                            // Tambahkan kelas aktif ke link saat ini
                             link.classList.add('dropdown-active');
                         } else {
                             link.classList.remove('dropdown-active');
@@ -570,6 +579,10 @@
             fetchAndDisplayContent('aktivitas', 'aktivitas-container', 'aktivitas-dropdown');
             setupDropdown('aktivitas-menu-button', 'aktivitas-dropdown');
             setupDropdown('artikel-menu-button', 'artikel-dropdown');
+            
+            // Tambahkan event listener untuk klik di dropdown
+            document.getElementById('aktivitas-dropdown').addEventListener('click', handleDropdownClick);
+            document.getElementById('artikel-dropdown').addEventListener('click', handleDropdownClick);
         });
 
     </script>
