@@ -47,7 +47,7 @@
             background-color: rgba(30, 58, 138, 0.7); /* Warna biru brand dengan transparansi */
         }
         
-        /* Style untuk konten artikel di dalam modal */
+        /* Style untuk konten di dalam modal */
         .prose h1, .prose h2, .prose h3 { font-weight: bold; margin-top: 1.5em; margin-bottom: 0.5em; }
         .prose p { margin-bottom: 1em; line-height: 1.6; }
         .prose ul { list-style-type: disc; margin-left: 1.5em; margin-bottom: 1em; }
@@ -302,11 +302,11 @@
         </div>
     </footer>
 
-    <!-- Modal Artikel -->
-    <div id="article-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden items-center justify-center p-4">
+    <!-- Modal Konten (untuk Artikel & Aktivitas) -->
+    <div id="content-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden items-center justify-center p-4">
         <div class="bg-white rounded-lg shadow-xl w-full max-w-3xl max-h-full overflow-y-auto">
             <div class="p-6 md:p-8 relative">
-                <button onclick="closeArticleModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+                <button onclick="closeContentModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
                     <i data-feather="x" class="h-6 w-6"></i>
                 </button>
                 <h2 id="modal-title" class="text-3xl font-bold text-brand-blue mb-2"></h2>
@@ -442,38 +442,52 @@
                         <p class="text-sm text-gray-500 mb-2">${attr.category || 'Umum'} · ${date}</p>
                         <h3 class="font-bold text-xl mb-3 text-gray-800">${attr.title}</h3>
                         <p class="text-gray-600 mb-4 flex-grow">${summary}</p>
-                        <a href="javascript:void(0)" onclick='showArticleModal(${attrString}, ${bodyString})' class="font-semibold text-brand-blue hover:text-brand-orange transition-colors mt-auto">Baca Selengkapnya &rarr;</a>
+                        <a href="javascript:void(0)" onclick='showContentModal(${attrString}, ${bodyString})' class="font-semibold text-brand-blue hover:text-brand-orange transition-colors mt-auto">Baca Selengkapnya &rarr;</a>
                     </div>
                 </div>
             `;
         }
         
         function createActivityCard(attr, body, slug) {
+             const summary = marked.parse(body).replace(/<[^>]*>/g, '').substring(0, 120) + '...';
+             const attrString = JSON.stringify(attr).replace(/'/g, "\\'");
+             const bodyString = JSON.stringify(body).replace(/'/g, "\\'");
+
              return `
-                <div id="${slug}" class="content-card bg-gray-50 rounded-xl shadow-lg overflow-hidden transform hover:-translate-y-2 transition-transform duration-300">
+                <div id="${slug}" class="content-card bg-gray-50 rounded-xl shadow-lg overflow-hidden transform hover:-translate-y-2 transition-transform duration-300 flex flex-col">
                     <img src="${attr.photo || 'https://placehold.co/400x300/1E3A8A/FFFFFF?text=Aktivitas'}" alt="${attr.title}" class="w-full h-56 object-cover">
-                    <div class="p-6">
+                    <div class="p-6 flex-grow flex flex-col">
                         <h3 class="font-bold text-xl mb-2 text-gray-800">${attr.title}</h3>
-                        <div class="text-gray-600 text-base">${marked.parse(body)}</div>
+                        <p class="text-gray-600 text-base mb-4 flex-grow">${summary}</p>
+                        <a href="javascript:void(0)" onclick='showContentModal(${attrString}, ${bodyString})' class="font-semibold text-brand-blue hover:text-brand-orange transition-colors mt-auto">Baca Selengkapnya &rarr;</a>
                     </div>
                 </div>
             `;
         }
 
-        // --- FUNGSI UNTUK MODAL ARTIKEL ---
-        const articleModal = document.getElementById('article-modal');
+        // --- FUNGSI UNTUK MODAL KONTEN (Artikel & Aktivitas) ---
+        const contentModal = document.getElementById('content-modal');
         const modalTitle = document.getElementById('modal-title');
         const modalMeta = document.getElementById('modal-meta');
         const modalThumbnail = document.getElementById('modal-thumbnail');
         const modalBody = document.getElementById('modal-body');
 
-        function showArticleModal(attributes, body) {
-            const date = new Date(attributes.date).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+        function showContentModal(attributes, body) {
             modalTitle.innerText = attributes.title;
-            modalMeta.innerText = `${attributes.category || 'Umum'} · ${date}`;
             
-            if (attributes.thumbnail) {
-                modalThumbnail.src = attributes.thumbnail;
+            // Tampilkan meta (kategori & tanggal) hanya jika ada
+            if (attributes.date && attributes.category) {
+                const date = new Date(attributes.date).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+                modalMeta.innerText = `${attributes.category} · ${date}`;
+                modalMeta.classList.remove('hidden');
+            } else {
+                modalMeta.classList.add('hidden');
+            }
+            
+            // Tampilkan thumbnail (gambar utama) jika ada
+            const thumbnailSrc = attributes.thumbnail || attributes.photo;
+            if (thumbnailSrc) {
+                modalThumbnail.src = thumbnailSrc;
                 modalThumbnail.alt = attributes.title;
                 modalThumbnail.classList.remove('hidden');
             } else {
@@ -481,19 +495,19 @@
             }
 
             modalBody.innerHTML = marked.parse(body);
-            articleModal.classList.remove('hidden');
-            articleModal.classList.add('flex');
+            contentModal.classList.remove('hidden');
+            contentModal.classList.add('flex');
             feather.replace(); // Perbarui ikon di dalam modal
         }
 
-        function closeArticleModal() {
-            articleModal.classList.add('hidden');
-            articleModal.classList.remove('flex');
+        function closeContentModal() {
+            contentModal.classList.add('hidden');
+            contentModal.classList.remove('flex');
         }
 
-        articleModal.addEventListener('click', (event) => {
-            if (event.target === articleModal) {
-                closeArticleModal();
+        contentModal.addEventListener('click', (event) => {
+            if (event.target === contentModal) {
+                closeContentModal();
             }
         });
         
