@@ -52,6 +52,12 @@
         .prose p { margin-bottom: 1em; line-height: 1.6; }
         .prose ul { list-style-type: disc; margin-left: 1.5em; margin-bottom: 1em; }
         .prose a { color: #1E3A8A; text-decoration: underline; }
+
+        /* Style untuk link dropdown yang aktif */
+        .dropdown-active {
+            color: #F97316; /* Oranye */
+            font-weight: 600;
+        }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-800">
@@ -384,11 +390,15 @@
                         
                         // Populate dropdown
                         if (dropdownContainer) {
-                            const dropdownLink = `<a href="#${slug}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">${attributes.title}</a>`;
+                            const dropdownLink = `<a href="#${slug}" class="dropdown-link block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">${attributes.title}</a>`;
                             dropdownContainer.innerHTML += dropdownLink;
                         }
                     }
                 }
+                
+                // Setelah semua kartu dibuat, mulai amati mereka
+                observeCards();
+
             } catch (error) {
                 console.error(`Error fetching ${collectionName}:`, error);
                 container.innerHTML = `<p class="text-center col-span-full text-red-500">Gagal memuat ${collectionName}.</p>`;
@@ -426,7 +436,7 @@
             const bodyString = JSON.stringify(body).replace(/'/g, "\\'");
 
             return `
-                <div id="${slug}" class="bg-white rounded-xl shadow-lg overflow-hidden transform hover:-translate-y-2 transition-transform duration-300 flex flex-col">
+                <div id="${slug}" class="content-card bg-white rounded-xl shadow-lg overflow-hidden transform hover:-translate-y-2 transition-transform duration-300 flex flex-col">
                     ${attr.thumbnail ? `<img src="${attr.thumbnail}" alt="${attr.title}" class="w-full h-48 object-cover">` : ''}
                     <div class="p-6 flex-grow flex flex-col">
                         <p class="text-sm text-gray-500 mb-2">${attr.category || 'Umum'} · ${date}</p>
@@ -440,7 +450,7 @@
         
         function createActivityCard(attr, body, slug) {
              return `
-                <div id="${slug}" class="bg-gray-50 rounded-xl shadow-lg overflow-hidden transform hover:-translate-y-2 transition-transform duration-300">
+                <div id="${slug}" class="content-card bg-gray-50 rounded-xl shadow-lg overflow-hidden transform hover:-translate-y-2 transition-transform duration-300">
                     <img src="${attr.photo || 'https://placehold.co/400x300/1E3A8A/FFFFFF?text=Aktivitas'}" alt="${attr.title}" class="w-full h-56 object-cover">
                     <div class="p-6">
                         <h3 class="font-bold text-xl mb-2 text-gray-800">${attr.title}</h3>
@@ -509,6 +519,35 @@
             document.getElementById('aktivitas-dropdown').classList.add('hidden');
             document.getElementById('artikel-dropdown').classList.add('hidden');
         });
+
+        // --- LOGIKA UNTUK MENANDAI LINK AKTIF SAAT SCROLL ---
+        function observeCards() {
+            const observerOptions = {
+                root: null,
+                rootMargin: '-50% 0px -50% 0px', // Aktif saat elemen di tengah layar
+                threshold: 0
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    const id = entry.target.getAttribute('id');
+                    const link = document.querySelector(`.dropdown-link[href="#${id}"]`);
+                    if (link) {
+                        if (entry.isIntersecting) {
+                            // Hapus kelas aktif dari semua link lain
+                            document.querySelectorAll('.dropdown-link').forEach(l => l.classList.remove('dropdown-active'));
+                            // Tambahkan kelas aktif ke link saat ini
+                            link.classList.add('dropdown-active');
+                        } else {
+                            link.classList.remove('dropdown-active');
+                        }
+                    }
+                });
+            }, observerOptions);
+
+            const cards = document.querySelectorAll('.content-card');
+            cards.forEach(card => observer.observe(card));
+        }
 
 
         // Panggil fungsi saat halaman selesai dimuat
