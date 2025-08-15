@@ -30,5 +30,5 @@ collections:
     fields:
       - {label: "Nama Aktivitas", name: "title", widget: "string"}
       - {label: "Foto Aktivitas", name: "photo", widget: "image"}
-      - {label: "Deskripsi Singkat", name: "description", widget: "text"}
+      - {label: "Isi Aktivitas", name: "body", widget: "markdown"} # PERUBAHAN DI SINI
 
