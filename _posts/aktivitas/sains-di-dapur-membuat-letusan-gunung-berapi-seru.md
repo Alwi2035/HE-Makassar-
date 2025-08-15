@@ -71,7 +71,7 @@ Siapa bilang belajar sains harus rumit dan membutuhkan laboratorium canggih? Mar
 
 Aktivitas praktis (hands-on) ini adalah cara fantastis untuk mengenalkan konsep sebab-akibat, melatih keterampilan motorik, dan yang terpenting, menyalakan api rasa ingin tahu (*curiosity*) pada anak dengan cara yang tak terlupakan.
 
-**Alat dan Bahan:**
+**Alat dan Bahan :**
 
 1. Botol plastik bekas (ukuran kecil atau sedang)
 2. Nampan atau wadah besar untuk menampung "lava"
